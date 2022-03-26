@@ -1,3 +1,6 @@
+// Copyright 2018-2022 System76 <info@system76.com>
+// SPDX-License-Identifier: MIT
+
 #![no_std]
 
 //! Validate a hostname according to the [IETF RFC 1123](https://tools.ietf.org/html/rfc1123).
