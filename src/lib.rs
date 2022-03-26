@@ -19,21 +19,25 @@
 /// - It does not start or end with `-` or `.`.
 /// - It does not contain any characters outside of the alphanumeric range, except for `-` and `.`.
 /// - It is not empty.
+/// - It is 253 or fewer characters.
+/// - Its labels (characters separated by `.`) are not empty.
+/// - Its labels are 63 or fewer characters.
+/// - Its lables do not start or end with '-' or '.'.
 pub fn is_valid(hostname: &str) -> bool {
     fn is_valid_char(byte: u8) -> bool {
-        (byte >= b'a' && byte <= b'z')
-            || (byte >= b'A' && byte <= b'Z')
-            || (byte >= b'0' && byte <= b'9')
+        (b'a'..=b'z').contains(&byte)
+            || (b'A'..=b'Z').contains(&byte)
+            || (b'0'..=b'9').contains(&byte)
             || byte == b'-'
             || byte == b'.'
     }
 
     !(hostname.bytes().any(|byte| !is_valid_char(byte))
-        || hostname.ends_with('-')
-        || hostname.starts_with('-')
-        || hostname.ends_with('.')
-        || hostname.starts_with('.')
-        || hostname.is_empty())
+        || hostname.split('.').any(|label| {
+            label.is_empty() || label.len() > 63 || label.starts_with('-') || label.ends_with('-')
+        })
+        || hostname.is_empty()
+        || hostname.len() > 253)
 }
 
 #[cfg(test)]
@@ -64,6 +68,10 @@ mod tests {
             "asd f@",
             ".invalid",
             "invalid.name.",
+            "foo.label-is-way-to-longgggggggggggggggggggggggggggggggggggggggggggg.org",
+            "invalid.-starting.char",
+            "invalid.ending-.char",
+            "empty..label",
         ] {
             assert!(!is_valid(hostname), "{} should not be valid", hostname);
         }
