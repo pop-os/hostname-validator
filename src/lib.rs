@@ -25,7 +25,7 @@
 /// - It is 253 or fewer characters.
 /// - Its labels (characters separated by `.`) are not empty.
 /// - Its labels are 63 or fewer characters.
-/// - Its lables do not start or end with '-' or '.'.
+/// - Its labels do not start or end with '-' or '.'.
 pub fn is_valid(hostname: &str) -> bool {
     fn is_valid_char(byte: u8) -> bool {
         (b'a'..=b'z').contains(&byte)
